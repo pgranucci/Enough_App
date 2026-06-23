@@ -13,7 +13,13 @@ import { isSupabaseConfigured } from '@/lib/env';
 const AUTH_ONLY_ROUTES = new Set(['login', 'sign-up', 'forgot-password']);
 
 export function AuthGate({ children }: { children: ReactNode }) {
-  const { loading: authLoading, session, recoveryMode } = useSupabaseAuth();
+  const {
+    loading: authLoading,
+    error: authError,
+    session,
+    recoveryMode,
+    refreshSession,
+  } = useSupabaseAuth();
   const {
     loading: dataLoading,
     synced,
@@ -29,7 +35,7 @@ export function AuthGate({ children }: { children: ReactNode }) {
   const authRequired = isSupabaseConfigured();
 
   useEffect(() => {
-    if (!authRequired || authLoading) return;
+    if (!authRequired || authLoading || authError) return;
     if (session && authRequired && dataLoading) return;
     if (session && loadError) return;
 
@@ -73,6 +79,7 @@ export function AuthGate({ children }: { children: ReactNode }) {
   }, [
     authRequired,
     authLoading,
+    authError,
     session,
     recoveryMode,
     segments,
@@ -90,6 +97,29 @@ export function AuthGate({ children }: { children: ReactNode }) {
     return (
       <ThemedView style={styles.loading}>
         <ActivityIndicator size="large" color={colors.tint} />
+      </ThemedView>
+    );
+  }
+
+  if (authRequired && authError) {
+    return (
+      <ThemedView style={styles.errorContainer}>
+        <ThemedText type="sectionTitle" style={styles.errorTitle}>
+          We couldn't check your sign-in status
+        </ThemedText>
+        <ThemedText type="default" style={{ color: colors.textMuted, textAlign: 'center' }}>
+          {authError}
+        </ThemedText>
+        <Pressable
+          onPress={() => {
+            void refreshSession();
+          }}
+          style={({ pressed }) => [
+            styles.retryButton,
+            { backgroundColor: colors.tint, opacity: pressed ? 0.86 : 1 },
+          ]}>
+          <ThemedText style={styles.retryText}>Retry</ThemedText>
+        </Pressable>
       </ThemedView>
     );
   }

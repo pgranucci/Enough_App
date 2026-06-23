@@ -52,6 +52,9 @@ import { resolvePartialExpenseBucketTargets } from '@/src/core/buckets/expense-t
 import { applyIncomeReplacementToRetirement } from '@/utils/retirement-income-target';
 import { retirementInputsWithProfileAges } from '@/utils/profile-age';
 import { retirementInputsForBucket } from '@/utils/retirement-bucket-sync';
+import { withTimeout } from '@/utils/async-timeout';
+
+const DATA_STARTUP_TIMEOUT_MS = 20_000;
 
 type AppDataContextValue = {
   loading: boolean;
@@ -235,17 +238,30 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
     }
 
     setLoading(true);
+    setSynced(false);
     setLoadError(null);
     try {
       let data;
       try {
-        data = await fetchUserData(userId);
+        data = await withTimeout(
+          fetchUserData(userId),
+          DATA_STARTUP_TIMEOUT_MS,
+          'Profile loading'
+        );
       } catch (error) {
         if (!(error instanceof UserDataLoadError) || error.kind !== 'profile-not-found') {
           throw error;
         }
-        await ensureUserRows(userId);
-        data = await fetchUserData(userId);
+        await withTimeout(
+          ensureUserRows(userId),
+          DATA_STARTUP_TIMEOUT_MS,
+          'Profile setup'
+        );
+        data = await withTimeout(
+          fetchUserData(userId),
+          DATA_STARTUP_TIMEOUT_MS,
+          'Profile loading'
+        );
       }
       setProfile(data.profile);
       setRetirement(

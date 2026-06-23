@@ -1,9 +1,10 @@
 import { useRouter } from 'expo-router';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   LayoutAnimation,
   Platform,
+  Pressable,
   StyleSheet,
   UIManager,
   View,
@@ -39,6 +40,8 @@ import { withProfileIncomeUpdate } from '@/utils/profile-income';
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
+
+const ONBOARDING_HYDRATION_TIMEOUT_MS = 10_000;
 
 function formatMoneyInput(value: string) {
   const digits = value.replace(/\D/g, '');
@@ -137,9 +140,11 @@ export default function OnboardingScreen() {
     previousStep,
     updateData,
     hasHydrated,
+    setHasHydrated,
   } = useOnboardingStore();
   const [error, setError] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [hydrationTimedOut, setHydrationTimedOut] = useState(false);
 
   const steps = useMemo(() => getOnboardingSteps(data.planningMode), [data.planningMode]);
   const step = steps[stepIndex] ?? steps[0];
@@ -154,6 +159,19 @@ export default function OnboardingScreen() {
   } = validateOnboardingStep(data, step);
 
   const animateStep = () => LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+
+  useEffect(() => {
+    if (hasHydrated) {
+      setHydrationTimedOut(false);
+      return;
+    }
+
+    const timeout = setTimeout(() => {
+      setHydrationTimedOut(true);
+    }, ONBOARDING_HYDRATION_TIMEOUT_MS);
+
+    return () => clearTimeout(timeout);
+  }, [hasHydrated]);
 
   const goBack = () => {
     if (isSaving) return;
@@ -233,7 +251,26 @@ export default function OnboardingScreen() {
   if (!hasHydrated) {
     return (
       <ThemedView style={styles.loading}>
-        <ActivityIndicator size="large" color={colors.tint} />
+        {hydrationTimedOut ? (
+          <>
+            <ThemedText type="sectionTitle" style={styles.centerText}>
+              We couldn't load onboarding
+            </ThemedText>
+            <ThemedText type="caption" style={[styles.centerText, { color: colors.textMuted }]}>
+              Your saved onboarding draft did not load in time.
+            </ThemedText>
+            <Pressable
+              onPress={() => setHasHydrated(true)}
+              style={({ pressed }) => [
+                styles.retryButton,
+                { backgroundColor: colors.tint, opacity: pressed ? 0.86 : 1 },
+              ]}>
+              <ThemedText style={styles.retryText}>Retry</ThemedText>
+            </Pressable>
+          </>
+        ) : (
+          <ActivityIndicator size="large" color={colors.tint} />
+        )}
       </ThemedView>
     );
   }
@@ -385,6 +422,23 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    gap: Spacing.md,
+    padding: Spacing.xl,
+  },
+  centerText: {
+    textAlign: 'center',
+  },
+  retryButton: {
+    minHeight: 48,
+    minWidth: 140,
+    borderRadius: 18,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: Spacing.xl,
+  },
+  retryText: {
+    color: '#fff',
+    fontWeight: '700',
   },
   stack: {
     gap: Spacing.xl,

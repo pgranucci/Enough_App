@@ -9,6 +9,9 @@ import { Spacing } from '@/constants/theme';
 import { createSessionFromUrl, urlHasAuthTokens } from '@/lib/auth-deep-link';
 import { isSupabaseConfigured } from '@/lib/env';
 import { useAppTheme } from '@/hooks/use-app-theme';
+import { errorMessage, withTimeout } from '@/utils/async-timeout';
+
+const AUTH_CALLBACK_TIMEOUT_MS = 15_000;
 
 /**
  * Supabase redirects here after the user taps the password-reset email.
@@ -32,7 +35,11 @@ export default function AuthCallbackScreen() {
       }
 
       try {
-        const session = await createSessionFromUrl(incoming);
+        const session = await withTimeout(
+          createSessionFromUrl(incoming),
+          AUTH_CALLBACK_TIMEOUT_MS,
+          'Auth callback'
+        );
         if (session) {
           router.replace('/(auth)/reset-password');
           return true;
@@ -44,15 +51,23 @@ export default function AuthCallbackScreen() {
     };
 
     void (async () => {
-      if (await processUrl(url)) return;
+      try {
+        if (await processUrl(url)) return;
 
-      const initial = await Linking.getInitialURL();
-      if (await processUrl(initial)) return;
+        const initial = await withTimeout(
+          Linking.getInitialURL(),
+          AUTH_CALLBACK_TIMEOUT_MS,
+          'Initial link lookup'
+        );
+        if (await processUrl(initial)) return;
 
-      if (!url && !initial) {
-        setError('No reset data in link. Request a new email from Forgot password.');
-      } else {
-        setError('Link expired or invalid. Request a new reset email.');
+        if (!url && !initial) {
+          setError('No reset data in link. Request a new email from Forgot password.');
+        } else {
+          setError('Link expired or invalid. Request a new reset email.');
+        }
+      } catch (cause) {
+        setError(errorMessage(cause, 'Could not open reset link.'));
       }
     })();
   }, [url, router]);
