@@ -1,5 +1,5 @@
 import { useRouter, useSegments, type Href } from 'expo-router';
-import { useEffect, type ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
@@ -11,6 +11,7 @@ import { useAppTheme } from '@/hooks/use-app-theme';
 import { isSupabaseConfigured } from '@/lib/env';
 
 const AUTH_ONLY_ROUTES = new Set(['login', 'sign-up', 'forgot-password']);
+const APP_BOOT_TIMEOUT_MS = 25_000;
 
 export function AuthGate({ children }: { children: ReactNode }) {
   const {
@@ -33,6 +34,7 @@ export function AuthGate({ children }: { children: ReactNode }) {
   const router = useRouter();
   const { colors } = useAppTheme();
   const authRequired = isSupabaseConfigured();
+  const [bootTimedOut, setBootTimedOut] = useState(false);
 
   useEffect(() => {
     if (!authRequired || authLoading || authError) return;
@@ -93,10 +95,51 @@ export function AuthGate({ children }: { children: ReactNode }) {
   const bootLoading =
     authRequired && (authLoading || (session != null && dataLoading));
 
-  if (bootLoading) {
+  useEffect(() => {
+    if (!bootLoading) {
+      setBootTimedOut(false);
+      return;
+    }
+
+    const timeout = setTimeout(() => {
+      setBootTimedOut(true);
+    }, APP_BOOT_TIMEOUT_MS);
+
+    return () => clearTimeout(timeout);
+  }, [bootLoading]);
+
+  if (bootLoading && !bootTimedOut) {
     return (
       <ThemedView style={styles.loading}>
         <ActivityIndicator size="large" color={colors.tint} />
+      </ThemedView>
+    );
+  }
+
+  if (bootLoading && bootTimedOut) {
+    return (
+      <ThemedView style={styles.errorContainer}>
+        <ThemedText type="sectionTitle" style={styles.errorTitle}>
+          The app is taking too long to load
+        </ThemedText>
+        <ThemedText type="default" style={{ color: colors.textMuted, textAlign: 'center' }}>
+          We couldn't finish startup. This is usually a network or authentication issue.
+        </ThemedText>
+        <Pressable
+          onPress={() => {
+            setBootTimedOut(false);
+            if (authLoading) {
+              void refreshSession();
+            } else {
+              void refresh();
+            }
+          }}
+          style={({ pressed }) => [
+            styles.retryButton,
+            { backgroundColor: colors.tint, opacity: pressed ? 0.86 : 1 },
+          ]}>
+          <ThemedText style={styles.retryText}>Retry</ThemedText>
+        </Pressable>
       </ThemedView>
     );
   }
