@@ -1,0 +1,192 @@
+
+=== Staggered partner retirement — year-by-year cross-check ===
+
+## Household assumptions
+| Field | Value |
+|-------|-------|
+| Planning mode | Partner (Jordan + Alex) |
+| Jordan age today | 58 |
+| Alex age today | 55 (3 years younger) |
+| Jordan retires | **60** |
+| Alex retires (stops full-time work) | **63** |
+| Life expectancy | Jordan 90 / Alex 92 |
+| State / filing | **Florida**, married filing jointly |
+| Household gross income (pre-retirement) | $180,000 |
+| Income replacement | 75% → lifestyle gross $135,000 |
+| Lifestyle net goal (after income tax if sole income) | $122,072 |
+| Reference tax rate on lifestyle gross | 9.6% |
+| Nominal return / inflation | 7.5% / 2.5% → Fisher real ≈ 4.878% |
+
+## Portfolio at Jordan retirement (today's dollars)
+| Pre-tax balance | $240,000 |
+| Roth balance | $120,000 |
+| Roth share (s) | 33.3% |
+| Pre-tax share | 66.7% |
+
+## Income streams (gross, real dollars)
+| Stream | Amount | Timing |
+|--------|--------|--------|
+| Alex full-time salary (auto) | $80,000/yr | While Alex age < 63 (Jordan ages 60–65) |
+| Jordan Social Security | $30,000/yr | From Jordan age **67** |
+| Alex Social Security | $22,000/yr | From Alex age **67** (Jordan age **70**) |
+| Pension / other streams | $0 | — |
+
+## Tax model notes
+- **Income tax:** federal + FL (no state income tax) on taxable gross each year.
+- **FICA:** employee OASDI (6.2% to wage base) + Medicare (1.45%) on **work wages** only.
+- Alex salary counts as work → FICA deducted from household net while Alex is still employed.
+- Portfolio withdrawal G split: pre-tax portion = G×(1−s) is taxable; Roth portion = G×s is tax-free cash.
+- Each year solves G so: known_gross + G − income_tax − FICA = lifestyle_net.
+
+## Alex $80,000 salary — tax breakdown (Jordan ages 60–65)
+
+Federal income tax on wages uses the household MFJ return with Alex wages as the only gross income (standard deduction applied once). FICA applies to wages only — not portfolio withdrawals.
+
+| Line item | Amount |
+|-----------|-------:|
+| Gross wages | $80,000 |
+| Federal income tax | $5,523 |
+| FICA Social Security (6.2% on wages) | $4,960 |
+| FICA Medicare (1.45% on wages) | $1,160 |
+| Total payroll taxes (FICA) | $6,120 |
+| State income tax (Florida) | $0 |
+| **Net wage contribution to household** | **$68,357** |
+
+Same figures every year while Alex is employed (Jordan ages 60–65 / Alex ages 57–62).
+
+## Household reconciliation (Jordan ages 60–65)
+
+| Component | Gross | Income tax | FICA | Net to household |
+|-----------|------:|-----------:|-----:|-----------------:|
+| Alex wages | $80,000 | $5,523 | $6,120 | $68,357 |
+| Portfolio withdrawal G | $58,386 | $4,671 | $0 | $53,715 |
+| **Household total** | $138,386 | $10,194 | $6,120 | **$122,072** |
+| Lifestyle net target | | | | $122,072 |
+
+Portfolio split of G (same every partner-working year):
+- Pre-tax portion (66.7%): $38,924 (taxable)
+- Roth portion (33.3%): $19,462 (tax-free cash)
+
+### Verification checks
+
+- Alex net + portfolio net = $68,357 + $53,715 = **$122,072** (target $122,072)
+- Household net formula: gross cash $138,386 − income tax $10,194 − FICA $6,120 = **$122,072**
+- FICA base = Alex wages only ($80,000). FICA **not** applied to portfolio G ($58,386).
+- If FICA were incorrectly charged on portfolio G, extra payroll tax would be $4,467 — model applies **$0**.
+
+## Year-by-year table
+
+Jordan | Alex | Phase | Alex work | Jordan SS | Alex SS | FICA | Port G | PreTax Wd | Roth Wd | Taxable | IncTax | HH Net | Target
+age | age |  | gross | gross | gross |  |  |  |  | gross |  | net | net
+---:|---:|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:
+60 | 57 | Partner working | $80,000 | $0 | $0 | $6,120 | $58,386 | $38,924 | $19,462 | $118,924 | $10,194 | $122,072 | $122,072
+61 | 58 | Partner working | $80,000 | $0 | $0 | $6,120 | $58,386 | $38,924 | $19,462 | $118,924 | $10,194 | $122,072 | $122,072
+62 | 59 | Partner working | $80,000 | $0 | $0 | $6,120 | $58,386 | $38,924 | $19,462 | $118,924 | $10,194 | $122,072 | $122,072
+63 | 60 | Partner working | $80,000 | $0 | $0 | $6,120 | $58,386 | $38,924 | $19,462 | $118,924 | $10,194 | $122,072 | $122,072
+64 | 61 | Partner working | $80,000 | $0 | $0 | $6,120 | $58,386 | $38,924 | $19,462 | $118,924 | $10,194 | $122,072 | $122,072
+65 | 62 | Partner working | $80,000 | $0 | $0 | $6,120 | $58,386 | $38,924 | $19,462 | $118,924 | $10,194 | $122,072 | $122,072
+66 | 63 | Both retired, pre-SS | $0 | $0 | $0 | $0 | $128,254 | $85,503 | $42,751 | $85,503 | $6,183 | $122,071 | $122,072
+67 | 64 | Jordan SS only | $0 | $30,000 | $0 | $0 | $99,560 | $66,373 | $33,187 | $96,373 | $7,488 | $122,072 | $122,072
+68 | 65 | Jordan SS only | $0 | $30,000 | $0 | $0 | $99,560 | $66,373 | $33,187 | $96,373 | $7,488 | $122,072 | $122,072
+69 | 66 | Jordan SS only | $0 | $30,000 | $0 | $0 | $99,560 | $66,373 | $33,187 | $96,373 | $7,488 | $122,072 | $122,072
+70 | 67 | Both on SS | $0 | $30,000 | $22,000 | $0 | $78,516 | $52,344 | $26,172 | $104,344 | $8,444 | $122,072 | $122,072
+71 | 68 | Both on SS | $0 | $30,000 | $22,000 | $0 | $78,516 | $52,344 | $26,172 | $104,344 | $8,444 | $122,072 | $122,072
+72 | 69 | Both on SS | $0 | $30,000 | $22,000 | $0 | $78,516 | $52,344 | $26,172 | $104,344 | $8,444 | $122,072 | $122,072
+73 | 70 | Both on SS | $0 | $30,000 | $22,000 | $0 | $78,516 | $52,344 | $26,172 | $104,344 | $8,444 | $122,072 | $122,072
+74 | 71 | Both on SS | $0 | $30,000 | $22,000 | $0 | $78,516 | $52,344 | $26,172 | $104,344 | $8,444 | $122,072 | $122,072
+75 | 72 | Both on SS | $0 | $30,000 | $22,000 | $0 | $78,516 | $52,344 | $26,172 | $104,344 | $8,444 | $122,072 | $122,072
+76 | 73 | Both on SS | $0 | $30,000 | $22,000 | $0 | $78,516 | $52,344 | $26,172 | $104,344 | $8,444 | $122,072 | $122,072
+77 | 74 | Both on SS | $0 | $30,000 | $22,000 | $0 | $78,516 | $52,344 | $26,172 | $104,344 | $8,444 | $122,072 | $122,072
+78 | 75 | Both on SS | $0 | $30,000 | $22,000 | $0 | $78,516 | $52,344 | $26,172 | $104,344 | $8,444 | $122,072 | $122,072
+79 | 76 | Both on SS | $0 | $30,000 | $22,000 | $0 | $78,516 | $52,344 | $26,172 | $104,344 | $8,444 | $122,072 | $122,072
+80 | 77 | Both on SS | $0 | $30,000 | $22,000 | $0 | $78,516 | $52,344 | $26,172 | $104,344 | $8,444 | $122,072 | $122,072
+81 | 78 | Both on SS | $0 | $30,000 | $22,000 | $0 | $78,516 | $52,344 | $26,172 | $104,344 | $8,444 | $122,072 | $122,072
+82 | 79 | Both on SS | $0 | $30,000 | $22,000 | $0 | $78,516 | $52,344 | $26,172 | $104,344 | $8,444 | $122,072 | $122,072
+83 | 80 | Both on SS | $0 | $30,000 | $22,000 | $0 | $78,516 | $52,344 | $26,172 | $104,344 | $8,444 | $122,072 | $122,072
+84 | 81 | Both on SS | $0 | $30,000 | $22,000 | $0 | $78,516 | $52,344 | $26,172 | $104,344 | $8,444 | $122,072 | $122,072
+85 | 82 | Both on SS | $0 | $30,000 | $22,000 | $0 | $78,516 | $52,344 | $26,172 | $104,344 | $8,444 | $122,072 | $122,072
+86 | 83 | Both on SS | $0 | $30,000 | $22,000 | $0 | $78,516 | $52,344 | $26,172 | $104,344 | $8,444 | $122,072 | $122,072
+87 | 84 | Both on SS | $0 | $30,000 | $22,000 | $0 | $78,516 | $52,344 | $26,172 | $104,344 | $8,444 | $122,072 | $122,072
+88 | 85 | Both on SS | $0 | $30,000 | $22,000 | $0 | $78,516 | $52,344 | $26,172 | $104,344 | $8,444 | $122,072 | $122,072
+89 | 86 | Both on SS | $0 | $30,000 | $22,000 | $0 | $78,516 | $52,344 | $26,172 | $104,344 | $8,444 | $122,072 | $122,072
+90 | 87 | Both on SS | $0 | $30,000 | $22,000 | $0 | $78,516 | $52,344 | $26,172 | $104,344 | $8,444 | $122,072 | $122,072
+
+## Summary
+| Required portfolio PV (Jordan age 60) | $1,275,420 |
+| First-year portfolio gross withdrawal (age 60) | $58,386 |
+| First-year net portfolio gap | $53,715 |
+| Funding years | 31 (ages 60–90) |
+| Real discount rate | 4.878% |
+
+## Sample years (detail)
+
+### Jordan age 60 (Alex age 57) — Partner working
+- Net portfolio need (gap before withdrawal): $53,715
+- Portfolio gross withdrawal G: $58,386
+- Pre-tax portion of G (66.7%): $38,924
+- Roth portion of G (33.3%): $19,462
+- Partner work wages: $80,000 | FICA this year: $6,120
+- Jordan SS gross: $0 | Alex SS gross: $0
+- Household net after tax + FICA: $122,072 (target $122,072)
+
+### Jordan age 63 (Alex age 60) — Partner working
+- Net portfolio need (gap before withdrawal): $53,715
+- Portfolio gross withdrawal G: $58,386
+- Pre-tax portion of G (66.7%): $38,924
+- Roth portion of G (33.3%): $19,462
+- Partner work wages: $80,000 | FICA this year: $6,120
+- Jordan SS gross: $0 | Alex SS gross: $0
+- Household net after tax + FICA: $122,072 (target $122,072)
+
+### Jordan age 65 (Alex age 62) — Partner working
+- Net portfolio need (gap before withdrawal): $53,715
+- Portfolio gross withdrawal G: $58,386
+- Pre-tax portion of G (66.7%): $38,924
+- Roth portion of G (33.3%): $19,462
+- Partner work wages: $80,000 | FICA this year: $6,120
+- Jordan SS gross: $0 | Alex SS gross: $0
+- Household net after tax + FICA: $122,072 (target $122,072)
+
+### Jordan age 67 (Alex age 64) — Jordan SS only
+- Net portfolio need (gap before withdrawal): $92,072
+- Portfolio gross withdrawal G: $99,560
+- Pre-tax portion of G (66.7%): $66,373
+- Roth portion of G (33.3%): $33,187
+- Partner work wages: $0 | FICA this year: $0
+- Jordan SS gross: $30,000 | Alex SS gross: $0
+- Household net after tax + FICA: $122,072 (target $122,072)
+
+### Jordan age 70 (Alex age 67) — Both on SS
+- Net portfolio need (gap before withdrawal): $72,272
+- Portfolio gross withdrawal G: $78,516
+- Pre-tax portion of G (66.7%): $52,344
+- Roth portion of G (33.3%): $26,172
+- Partner work wages: $0 | FICA this year: $0
+- Jordan SS gross: $30,000 | Alex SS gross: $22,000
+- Household net after tax + FICA: $122,072 (target $122,072)
+
+### Jordan age 75 (Alex age 72) — Both on SS
+- Net portfolio need (gap before withdrawal): $72,272
+- Portfolio gross withdrawal G: $78,516
+- Pre-tax portion of G (66.7%): $52,344
+- Roth portion of G (33.3%): $26,172
+- Partner work wages: $0 | FICA this year: $0
+- Jordan SS gross: $30,000 | Alex SS gross: $22,000
+- Household net after tax + FICA: $122,072 (target $122,072)
+
+### Jordan age 90 (Alex age 87) — Both on SS
+- Net portfolio need (gap before withdrawal): $72,272
+- Portfolio gross withdrawal G: $78,516
+- Pre-tax portion of G (66.7%): $52,344
+- Roth portion of G (33.3%): $26,172
+- Partner work wages: $0 | FICA this year: $0
+- Jordan SS gross: $30,000 | Alex SS gross: $22,000
+- Household net after tax + FICA: $122,072 (target $122,072)
+
+## Prompt for another AI
+```
+Reproduce staggered-retirement-crosscheck-output.txt using the assumptions table.
+Verify at Jordan ages 60, 65, 67, 70: portfolio G, FICA on Alex wages, and household net = lifestyle net.
+At Jordan ages 60–65: Alex wages $80k → fed tax $5,523, FICA SS $4,960 + Medicare $1,160, net wages $68,357; portfolio net $53,715; FICA not on portfolio.
+Required PV should be approximately $1,275,420 at 4.878% real.
+```

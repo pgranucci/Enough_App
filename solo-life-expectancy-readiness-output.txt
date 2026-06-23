@@ -1,0 +1,73 @@
+
+=== Solo life expectancy → readiness simulation ===
+
+## Fixed inputs (all rows identical except life expectancy)
+| Field | Value |
+|-------|-------|
+| Planning mode | **Solo** (partner LE ignored) |
+| Current age | 40 |
+| Retirement age | 65 |
+| State / filing | Texas, single |
+| Lifestyle gross target | $80,000/yr (real dollars) |
+| Social Security | Excluded ($0) |
+| Pre-tax balance today | $100,000 |
+| Roth balance today | $50,000 |
+| Monthly contributions | $1,000 (pro-rata to 67% pre-tax / 33% Roth) |
+| Expected return / inflation | 7.5% / 2.5% → Fisher real ≈ 4.878% |
+| Default life expectancy | **95** |
+
+## Readiness formula
+
+```
+readiness% = min(100, round(projectedGrossEquivalentAtRetirement / requiredPortfolioPV × 100))
+requiredPortfolioPV = PV of year-by-year gross portfolio withdrawals from age 65 to lifeExpectancy
+fundingYears = lifeExpectancy − retirementAge  (solo mode only)
+```
+
+## Results by life expectancy
+
+Life exp | Funding yrs | Schedule yrs | Required PV | Projected gross-equiv | Readiness | Δ readiness vs default | Δ required PV vs default
+(age) |  | (65→LE) | at age 65 | at age 65 | % | pp | $
+---:|---:|---:|---:|---:|---:|---:|---:
+75 | 10 | 11 | $655,175 | $1,131,026 | 100% | +9 pp | $-584,420
+80 | 15 | 16 | $856,792 | $1,131,026 | 100% | +9 pp | $-382,803
+85 | 20 | 21 | $1,015,686 | $1,131,026 | 100% | +9 pp | $-223,909
+90 | 25 | 26 | $1,140,908 | $1,131,026 | 99% | +8 pp | $-98,687
+95 **(default)** | 30 | 31 | $1,239,595 | $1,131,026 | 91% | — | —
+100 | 35 | 36 | $1,317,369 | $1,131,026 | 86% | -5 pp | +$77,774
+105 | 40 | 41 | $1,378,662 | $1,131,026 | 82% | -9 pp | +$139,067
+
+## Key observations
+
+- **Default (95):** 91% readiness; need $1,239,595; fund 30 years (ages 65–95).
+- **Shortest (75):** 100% readiness (+9 pp vs default); required PV $655,175 ($-584,420 vs default).
+- **Longest (105):** 82% readiness (-9 pp vs default); required PV $1,378,662 (+$139,067 vs default).
+- Projected gross-equivalent at 65 is **constant** ($1,131,026) — life expectancy only changes required PV, not accumulation.
+- First-year gross portfolio withdrawal is **constant** ($74,726) in this scenario (no SS); longer life adds more discounted out-years.
+
+## Sample year-by-year check (default LE 95, first & last year)
+
+| Year | Age | Gross portfolio withdrawal |
+|------|----:|---------------------------:|
+| First | 65 | $74,726 |
+| Last | 95 | $74,726 |
+| PV sum (31 years @ 4.878% real) | | **$1,239,595** |
+
+## Prompts for another AI
+
+```
+Reproduce solo-life-expectancy-readiness-output.txt.
+
+Fixed: solo, age 40→65, TX single, $80k lifestyle gross, $100k pre-tax + $50k Roth,
+$1k/mo contributions, 7.5% return, 2.5% inflation, no Social Security.
+
+Verify fundingYears = lifeExpectancy − 65 for LE 75, 85, 95, 105:
+  LE 75 → 10 years, required PV ≈ $655,175, readiness ≈ 100%
+  LE 85 → 20 years, required PV ≈ $1,015,686, readiness ≈ 100%
+  LE 95 → 30 years, required PV ≈ $1,239,595, readiness ≈ 91%
+  LE 105 → 40 years, required PV ≈ $1,378,662, readiness ≈ 82%
+
+Default LE 95 readiness should be 91% with required PV ≈ $1,239,595.
+Readiness must decrease (or stay at 100% cap) as life expectancy increases.
+Projected gross-equivalent at 65 must be identical across all life expectancy rows.
+```
