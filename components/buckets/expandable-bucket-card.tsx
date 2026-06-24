@@ -299,6 +299,16 @@ export function ExpandableBucketCard({
 
   const confirmRemove = () => {
     if (!canRemove) return;
+    if (Platform.OS === 'web') {
+      const confirmed = window.confirm(
+        `Remove "${entry.name}" from your buckets? This cannot be undone.`
+      );
+      if (confirmed) {
+        void onRemoveBucket?.(entry.id);
+      }
+      return;
+    }
+
     Alert.alert(
       'Remove goal?',
       `Remove "${entry.name}" from your buckets? This cannot be undone.`,
