@@ -3,7 +3,8 @@ import { accountTotalBalance, type FinancialAccount } from '@/constants/financia
 import type { ProfileInputs } from '@/constants/profile';
 import type { RetirementInputs } from '@/constants/retirement';
 import { annualContributionForAccount } from '@/src/core/accounts/contributions';
-import { investmentMixReturnPercent } from '@/src/core/growth/returns';
+import { realInvestmentMixReturnPercent } from '@/src/core/growth/returns';
+import { realReturnPercent } from '@/src/core/shared/projection';
 
 const RETIREMENT_PACE_START_AGE = 22;
 const RETIREMENT_SCORE_FLEX_THRESHOLD = 1.15;
@@ -65,9 +66,11 @@ function assignedRetirementAccounts(
   return retirement.accounts.filter((account) => idSet.has(account.id));
 }
 
-export function getWeightedRetirementNominalReturnPercent(
+export function getWeightedRetirementRealReturnPercent(
   accounts: FinancialAccount[],
-  retirement: RetirementInputs
+  retirement: RetirementInputs,
+  inflationAssumptionPercent: number = retirement.inflationAssumption,
+  profile?: ProfileInputs
 ): number {
   let weighted = 0;
   let total = 0;
@@ -75,7 +78,10 @@ export function getWeightedRetirementNominalReturnPercent(
   for (const account of accounts) {
     const balance = accountTotalBalance(account);
     const mix = account.investmentMix ?? (account.accountType === 'savings' ? 'cash' : 'balanced');
-    const rate = investmentMixReturnPercent(mix, retirement);
+    const rate = realInvestmentMixReturnPercent(mix, {
+      ...retirement,
+      inflationAssumption: inflationAssumptionPercent,
+    });
     if (balance > 0) {
       weighted += balance * rate;
       total += balance;
@@ -83,7 +89,24 @@ export function getWeightedRetirementNominalReturnPercent(
   }
 
   if (total > 0) return weighted / total;
-  return retirement.expectedAnnualReturn;
+
+  if (profile) {
+    for (const account of accounts) {
+      const contribution = annualContributionForAccount(account, profile);
+      const mix = account.investmentMix ?? (account.accountType === 'savings' ? 'cash' : 'balanced');
+      const rate = realInvestmentMixReturnPercent(mix, {
+        ...retirement,
+        inflationAssumption: inflationAssumptionPercent,
+      });
+      if (contribution > 0) {
+        weighted += contribution * rate;
+        total += contribution;
+      }
+    }
+  }
+
+  if (total > 0) return weighted / total;
+  return realReturnPercent(retirement.expectedAnnualReturn, inflationAssumptionPercent);
 }
 
 export type RetirementPaceMetrics = {
@@ -127,11 +150,11 @@ export function calculateRetirementPaceMetrics(params: {
     baseBalance + Math.max(Math.round(params.hypotheticalAdditionalBalance ?? 0), 0),
     0
   );
-  const annualReturnPercentUsed =
-    params.annualReturnPercentOverride ??
-    getWeightedRetirementNominalReturnPercent(accounts, retirement);
   const annualInflationPercentUsed =
     params.annualInflationPercentOverride ?? retirement.inflationAssumption;
+  const annualReturnPercentUsed =
+    params.annualReturnPercentOverride ??
+    getWeightedRetirementRealReturnPercent(accounts, retirement, annualInflationPercentUsed, profile);
 
   const currentAge = Number.isFinite(retirement.currentAge)
     ? retirement.currentAge
