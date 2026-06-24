@@ -33,11 +33,17 @@ function growthFieldValue(
   key: InvestmentGrowthPreset,
   retirement: RetirementInputs
 ): number {
-  return portfolioGrowthRate(key, retirement.customInvestmentGrowthRates);
+  const value = portfolioGrowthRate(key, retirement.customInvestmentGrowthRates);
+  if (key === 'shortTerm') return INVESTMENT_GROWTH_PRESET_RATE.shortTerm;
+  return value > 0 ? value : INVESTMENT_GROWTH_PRESET_RATE[key];
 }
 
 function lifeExpectancyDisplayValue(stored: number): string {
   return String(stored > 0 ? stored : DEFAULT_LIFE_EXPECTANCY);
+}
+
+function percentAssumptionValue(stored: number, fallback: number): number {
+  return Number.isFinite(stored) && stored > 0 ? stored : fallback;
 }
 
 function AssumptionDivider() {
@@ -104,9 +110,13 @@ export function ProfileAssumptionsSection({
         <ProfilePercentInputField
           label="Annual Inflation"
           layout="inline"
-          value={retirement.inflationAssumption}
+          value={percentAssumptionValue(
+            retirement.inflationAssumption,
+            DEFAULT_INFLATION_ASSUMPTION
+          )}
           onChange={(inflationAssumption) => updateRetirement({ inflationAssumption })}
           placeholder={String(DEFAULT_INFLATION_ASSUMPTION)}
+          showZeroValue
         />
       </AssumptionRow>
 
@@ -115,9 +125,13 @@ export function ProfileAssumptionsSection({
           label="Retirement Investment Return Assumption"
           infoMessage={RETIREMENT_RETURN_INFO}
           layout="inline"
-          value={retirement.expectedAnnualReturn}
+          value={percentAssumptionValue(
+            retirement.expectedAnnualReturn,
+            DEFAULT_RETIREMENT_INVESTMENT_RETURN
+          )}
           onChange={(expectedAnnualReturn) => updateRetirement({ expectedAnnualReturn })}
           placeholder={String(DEFAULT_RETIREMENT_INVESTMENT_RETURN)}
+          showZeroValue
         />
       </AssumptionRow>
 
