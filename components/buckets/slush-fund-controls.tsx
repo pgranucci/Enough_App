@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import Slider from '@react-native-community/slider';
 import { useEffect, useState } from 'react';
-import { Alert, Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import type { ExpenseInputs } from '@/constants/profile';
@@ -9,6 +9,7 @@ import { Spacing } from '@/constants/theme';
 import { useAppTheme } from '@/hooks/use-app-theme';
 import { DEFAULT_SLUSH_COVERAGE_MONTHS } from '@/src/core/buckets/expense-targets';
 import { normalizeFiniteNumber } from '@/utils/numbers';
+import { showMessage } from '@/utils/show-message';
 
 const SLUSH_CALC_EXPLANATION =
   'Your slush fund is money set aside for non-emergencies. It gives you flexibility for unexpected expenses, opportunities, or extra spending without touching your emergency fund.\n\nCalculation:\nTotal Monthly Spending × Months of Coverage\n\nUnlike an emergency fund, a slush fund is meant to be used.';
@@ -30,7 +31,7 @@ export function SlushFundControls({ expenses, onPatch }: SlushFundControlsProps)
   }, [months]);
 
   const showInfo = () => {
-    Alert.alert('Slush fund', SLUSH_CALC_EXPLANATION);
+    showMessage('Slush fund', SLUSH_CALC_EXPLANATION);
   };
 
   return (

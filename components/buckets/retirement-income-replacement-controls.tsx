@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import Slider from '@react-native-community/slider';
 import { useEffect, useMemo, useState } from 'react';
-import { Alert, Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import type { RetirementInputs } from '@/constants/retirement';
@@ -16,6 +16,7 @@ import {
   estimateRetirementTargetIncomeTax,
 } from '@/utils/retirement-income-tax';
 import { normalizeFiniteNumber } from '@/utils/numbers';
+import { showMessage } from '@/utils/show-message';
 
 export const RETIREMENT_NEED_EXPLANATION =
   'Your retirement goal estimates the portfolio needed to support your target retirement income.\n\nOther income sources, such as Social Security or pensions, reduce the amount your investments must provide.';
@@ -62,7 +63,7 @@ export function RetirementIncomeReplacementControls({
   );
 
   const showNetIncomeInfo = () => {
-    Alert.alert('Estimated Net Income', NET_INCOME_TAX_INFO);
+    showMessage('Estimated Net Income', NET_INCOME_TAX_INFO);
   };
 
   const applyPercent = (nextPercent: number) => {

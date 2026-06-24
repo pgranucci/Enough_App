@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useState, type ComponentProps } from 'react';
-import { Alert, Pressable, Switch, StyleSheet, View } from 'react-native';
+import { Pressable, Switch, StyleSheet, View } from 'react-native';
 
 import { BucketIcon } from '@/components/buckets/bucket-icon';
 import { ThemedText } from '@/components/themed-text';
@@ -10,6 +10,7 @@ import { useAppTheme } from '@/hooks/use-app-theme';
 import type { RetirementPaceMetrics } from '@/src/core/retirement/retirement-projection-utils';
 import type { ExcessBucketLine, ExcessSummary } from '@/utils/bucket-excess';
 import { formatCurrency } from '@/utils/format';
+import { showMessage } from '@/utils/show-message';
 
 const MY_EXCESS_INFO =
   'My Excess is the total amount saved above your target amounts across all included buckets.\n\nOnly positive excess amounts are counted. Buckets that are below their target do not reduce your excess total.';
@@ -261,7 +262,7 @@ export function MyExcessSection({
   );
 
   const showInfo = () => {
-    Alert.alert('My Excess', MY_EXCESS_INFO);
+    showMessage('My Excess', MY_EXCESS_INFO);
   };
 
   return (

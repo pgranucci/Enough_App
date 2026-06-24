@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useState } from 'react';
-import { Alert, Modal, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Modal, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import {
@@ -16,6 +16,7 @@ import {
   toggleBucketAccountAssignment,
 } from '@/src/core/buckets/account-assignment';
 import { formatCurrency } from '@/utils/format';
+import { showMessage } from '@/utils/show-message';
 
 type BucketAccountAssignmentControlsProps = {
   bucketId: string;
@@ -65,7 +66,7 @@ export function BucketAccountAssignmentControls({
     const result = toggleBucketAccountAssignment(accountId, bucketId, assignedMap);
     if (!result.ok) {
       const ownerLabel = bucketLabel(result.ownerBucketId, bucketLabelsById);
-      Alert.alert(
+      showMessage(
         'Account already assigned',
         `${accountDisplayName(assignableAccounts.find((account) => account.id === accountId)!)} is already assigned to ${ownerLabel}. Each account can only be linked to one goal. Unassign it there first.`
       );

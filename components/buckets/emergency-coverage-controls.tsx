@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import Slider from '@react-native-community/slider';
 import { useEffect, useState } from 'react';
-import { Alert, Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import type { ExpenseInputs } from '@/constants/profile';
@@ -9,6 +9,7 @@ import { Spacing } from '@/constants/theme';
 import { useAppTheme } from '@/hooks/use-app-theme';
 import { DEFAULT_EMERGENCY_COVERAGE_MONTHS } from '@/src/core/buckets/expense-targets';
 import { normalizeFiniteNumber } from '@/utils/numbers';
+import { showMessage } from '@/utils/show-message';
 
 const EMERGENCY_CALC_EXPLANATION =
   'Your emergency fund is the amount of cash you want set aside for unexpected events. We calculate it by multiplying your monthly essential expenses by the number of months of coverage you choose.\n\nEssential expenses typically include:\n\nHousing\nGroceries\nUtilities\nInsurance\nTransportation\nMinimum debt payments\n\nMost people keep 3–6 months of essential expenses in an emergency fund, but you can choose a higher or lower amount based on your situation.';
@@ -31,7 +32,7 @@ export function EmergencyCoverageControls({ expenses, onPatch }: EmergencyCovera
   }, [months]);
 
   const showInfo = () => {
-    Alert.alert('Emergency fund', EMERGENCY_CALC_EXPLANATION);
+    showMessage('Emergency fund', EMERGENCY_CALC_EXPLANATION);
   };
 
   return (

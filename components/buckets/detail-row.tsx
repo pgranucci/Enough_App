@@ -1,9 +1,10 @@
 import { Ionicons } from '@expo/vector-icons';
-import { Alert, Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { Spacing } from '@/constants/theme';
 import { useAppTheme } from '@/hooks/use-app-theme';
+import { showMessage } from '@/utils/show-message';
 
 type DetailRowProps = {
   label: string;
@@ -24,7 +25,7 @@ export function DetailRow({ label, value, mutedText, highlight, infoMessage }: D
         </ThemedText>
         {infoMessage ? (
           <Pressable
-            onPress={() => Alert.alert(label, infoMessage)}
+            onPress={() => showMessage(label, infoMessage)}
             hitSlop={10}
             accessibilityRole="button"
             accessibilityLabel={`About ${label}`}>

@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useEffect, useState } from 'react';
-import { Alert, Pressable, StyleSheet, Switch, View } from 'react-native';
+import { Pressable, StyleSheet, Switch, View } from 'react-native';
 
 import { RetirementEditSheet } from '@/components/profile/retirement/retirement-edit-sheet';
 import { ProfileInputField } from '@/components/profile/profile-input-field';
@@ -14,6 +14,7 @@ import { Radius, Spacing } from '@/constants/theme';
 import { useAppTheme } from '@/hooks/use-app-theme';
 import { formatCurrency, formatWholeNumberDisplay, parseUsdWholeToNumber } from '@/utils/format';
 import { parseAgeInput } from '@/utils/profile-age';
+import { showMessage } from '@/utils/show-message';
 
 const OTHER_RETIREMENT_INCOME_INFO =
   'Use this for income after leaving full-time work — part-time work, consulting, rental income, annuities, and similar sources. Enter the gross monthly amount and the ages it is expected to start and end. Turn on Work in Retirement for wages that are subject to payroll tax.';
@@ -206,7 +207,7 @@ export function RetirementOtherIncomeSheet({
             <View style={styles.toggleControl}>
               <ThemedText type="captionMedium">Is this work income?</ThemedText>
               <Pressable
-                onPress={() => Alert.alert('Is this work income?', WORK_IN_RETIREMENT_INFO)}
+                onPress={() => showMessage('Is this work income?', WORK_IN_RETIREMENT_INFO)}
                 hitSlop={10}
                 accessibilityRole="button"
                 accessibilityLabel="About work income">

@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useState } from 'react';
-import { Alert, Pressable, StyleSheet, Switch, TextInput, View } from 'react-native';
+import { Pressable, StyleSheet, Switch, TextInput, View } from 'react-native';
 
 import { AccountOwnerPicker } from '@/components/profile/account-owner-picker';
 import { AccountTypePicker } from '@/components/profile/account-type-picker';
@@ -24,6 +24,7 @@ import { Radius, Spacing } from '@/constants/theme';
 import { useAppTheme } from '@/hooks/use-app-theme';
 import { formatCurrency, formatWholeNumberDisplay, parseUsdWholeToNumber } from '@/utils/format';
 import { syncRetirementFromAccounts } from '@/utils/financial-accounts-sync';
+import { showMessage } from '@/utils/show-message';
 
 type AccountsAndSavingsSectionProps = {
   profile: ProfileInputs;
@@ -406,7 +407,7 @@ export function AccountsAndSavingsSection({
               <View style={styles.labelRow}>
                 <ThemedText type="captionMedium">Investment Mix</ThemedText>
                 <Pressable
-                  onPress={() => Alert.alert('Investment Mix', INVESTMENT_MIX_INFO_MESSAGE)}
+                  onPress={() => showMessage('Investment Mix', INVESTMENT_MIX_INFO_MESSAGE)}
                   hitSlop={10}
                   accessibilityRole="button"
                   accessibilityLabel="About investment mix">
