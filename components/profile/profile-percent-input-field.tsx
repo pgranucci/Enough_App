@@ -18,6 +18,7 @@ type ProfilePercentInputFieldProps = {
   onChange: (value: number) => void;
   placeholder: string;
   editable?: boolean;
+  showZeroValue?: boolean;
   /** `inline`: label and input on one row (Assumptions). `stacked`: label above input (default). */
   layout?: 'stacked' | 'inline';
 };
@@ -29,17 +30,22 @@ export function ProfilePercentInputField({
   onChange,
   placeholder,
   editable = true,
+  showZeroValue = false,
   layout = 'stacked',
 }: ProfilePercentInputFieldProps) {
   const { colors } = useAppTheme();
-  const [text, setText] = useState(() => formatPercentValue(value));
+  const displayValue = (nextValue: number) =>
+    showZeroValue && Number.isFinite(nextValue) && nextValue === 0
+      ? '0'
+      : formatPercentValue(nextValue);
+  const [text, setText] = useState(() => displayValue(value));
   const [focused, setFocused] = useState(false);
 
   useEffect(() => {
     if (!focused) {
-      setText(formatPercentValue(value));
+      setText(displayValue(value));
     }
-  }, [value, focused]);
+  }, [value, focused, showZeroValue]);
 
   const inputRow = (
     <View

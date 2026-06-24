@@ -42,18 +42,18 @@ export default function SettingsScreen() {
           />
 
           {user?.email ? (
-            <ProfileCollapsibleSection title="Account">
+            <ProfileCollapsibleSection title="Account" defaultOpen={false}>
               <ThemedText type="captionMedium">Email</ThemedText>
               <ThemedText type="default">{user.email}</ThemedText>
             </ProfileCollapsibleSection>
           ) : null}
 
-          <ProfileCollapsibleSection title="Supabase">
+          <ProfileCollapsibleSection title="Supabase" defaultOpen={false}>
             <SupabaseConnectionTestCard embedded />
           </ProfileCollapsibleSection>
 
           {__DEV__ ? (
-            <ProfileCollapsibleSection title="Development">
+            <ProfileCollapsibleSection title="Development" defaultOpen={false}>
               <DevOnboardingReset />
             </ProfileCollapsibleSection>
           ) : null}

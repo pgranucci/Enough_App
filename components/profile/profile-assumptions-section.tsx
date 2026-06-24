@@ -11,7 +11,6 @@ import {
   DEFAULT_RETIREMENT_INVESTMENT_RETURN,
   INVESTMENT_GROWTH_ASSUMPTION_FIELDS,
   INVESTMENT_GROWTH_PRESET_RATE,
-  lifeExpectancyInputValue,
   portfolioGrowthRate,
   type InvestmentGrowthPreset,
   type RetirementInputs,
@@ -35,6 +34,10 @@ function growthFieldValue(
   retirement: RetirementInputs
 ): number {
   return portfolioGrowthRate(key, retirement.customInvestmentGrowthRates);
+}
+
+function lifeExpectancyDisplayValue(stored: number): string {
+  return String(stored > 0 ? stored : DEFAULT_LIFE_EXPECTANCY);
 }
 
 function AssumptionDivider() {
@@ -92,6 +95,7 @@ export function ProfileAssumptionsSection({
             onChange={(value) => setGrowthRate(key, value)}
             placeholder={placeholder}
             editable={!locked}
+            showZeroValue
           />
         </AssumptionRow>
       ))}
@@ -125,7 +129,7 @@ export function ProfileAssumptionsSection({
               <View style={styles.lifeExpectancyField}>
                 <ProfileInputField
                   label="Your Life Expectancy"
-                  value={lifeExpectancyInputValue(retirement.lifeExpectancy)}
+                  value={lifeExpectancyDisplayValue(retirement.lifeExpectancy)}
                   onChange={(text) =>
                     updateRetirement({ lifeExpectancy: parseAgeInput(text) })
                   }
@@ -136,7 +140,7 @@ export function ProfileAssumptionsSection({
               <View style={styles.lifeExpectancyField}>
                 <ProfileInputField
                   label="Partner's Life Expectancy"
-                  value={lifeExpectancyInputValue(retirement.partnerLifeExpectancy)}
+                  value={lifeExpectancyDisplayValue(retirement.partnerLifeExpectancy)}
                   onChange={(text) =>
                     updateRetirement({ partnerLifeExpectancy: parseAgeInput(text) })
                   }
@@ -150,7 +154,7 @@ export function ProfileAssumptionsSection({
           <ProfileInputField
             label="Life Expectancy"
             infoMessage={LIFE_EXPECTANCY_INFO}
-            value={lifeExpectancyInputValue(retirement.lifeExpectancy)}
+            value={lifeExpectancyDisplayValue(retirement.lifeExpectancy)}
             onChange={(text) => updateRetirement({ lifeExpectancy: parseAgeInput(text) })}
             placeholder={String(DEFAULT_LIFE_EXPECTANCY)}
             keyboardType="number-pad"
