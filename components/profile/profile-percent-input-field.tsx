@@ -128,9 +128,9 @@ const styles = StyleSheet.create({
     minHeight: 48,
   },
   inputRowInline: {
-    width: 112,
+    width: 104,
     flexShrink: 0,
-    paddingHorizontal: Spacing.md,
+    paddingHorizontal: Spacing.sm,
     minHeight: 44,
   },
   affix: {
@@ -141,9 +141,12 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 16,
     paddingVertical: Spacing.md,
+    minWidth: 0,
   },
   inputInline: {
     paddingVertical: Spacing.sm,
-    textAlign: 'right',
+    textAlign: 'center',
+    flexGrow: 1,
+    flexShrink: 1,
   },
 });
