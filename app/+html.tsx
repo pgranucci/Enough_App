@@ -65,7 +65,23 @@ export default function Root({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <ScrollViewStyleReset />
+        <style
+          dangerouslySetInnerHTML={{
+            __html: `
+              html,
+              body,
+              #root {
+                width: 100%;
+                max-width: 100%;
+                min-width: 0;
+                margin: 0;
+                overflow-x: hidden;
+              }
+            `,
+          }}
+        />
         <script dangerouslySetInnerHTML={{ __html: STARTUP_FALLBACK_SCRIPT }} />
       </head>
       <body>{children}</body>
