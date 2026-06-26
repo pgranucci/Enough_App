@@ -79,6 +79,13 @@ export default function Root({ children }: { children: ReactNode }) {
                 margin: 0;
                 overflow-x: hidden;
               }
+
+              input:focus,
+              textarea:focus,
+              select:focus {
+                outline: 2px solid rgba(148, 163, 184, 0.35);
+                outline-offset: 2px;
+              }
             `,
           }}
         />
